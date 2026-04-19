@@ -1,0 +1,17 @@
+{
+  "n_agents": 78,
+  "n_train_legit": 46,
+  "n_test_legit": 11,
+  "n_adversarial": 21,
+  "clusters_discovered": 4,
+  "noise_points": 45,
+  "threshold": 0.5,
+  "true_positive_rate": 1.0,
+  "false_positive_rate": 0.0,
+  "cluster_archetype_map": {
+    "0": "real_x402",
+    "1": "real_x402",
+    "2": "real_x402",
+    "3": "real_x402"
+  }
+}
