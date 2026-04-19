@@ -121,7 +121,38 @@ def _score_features(feats: np.ndarray, declared: str | None) -> dict:
 
     reasons = []
     if b_norm >= 0.5:
-        reasons.append(f"off-manifold behavior (score={b_norm:.2f})")
+        # Identify WHICH features are most anomalous by z-score so the
+        # reason text is specific rather than a generic "off-manifold".
+        z_flat = z[0]
+        feature_labels = {
+            "amount_log_mu": "transaction amount",
+            "amount_log_sigma": "amount variance",
+            "amount_cv": "amount volatility",
+            "interval_log_mu": "transaction velocity",
+            "interval_log_sigma": "timing variance",
+            "counterparty_entropy": "counterparty diversity",
+            "counterparty_unique_ratio": "counterparty spread",
+            "calldata_mu": "calldata size",
+            "calldata_sigma": "calldata variance",
+            "gas_mu": "gas price",
+            "night_ratio": "night-hours activity",
+            "intent_action_delta_mu": "intent drift",
+            "attestation_depth": "attestation chain",
+            "top_sink_shared_fanin": "sink fan-in",
+            "top_sink_volume_share": "sink concentration",
+        }
+        anomalies = []
+        for i, col in enumerate(FEATURE_COLS):
+            if i < len(z_flat) and abs(z_flat[i]) > 2.0:
+                label = feature_labels.get(col, col)
+                direction = "high" if z_flat[i] > 0 else "low"
+                anomalies.append((abs(z_flat[i]), f"{label} is abnormally {direction} ({abs(z_flat[i]):.1f}x std dev)"))
+        anomalies.sort(key=lambda x: -x[0])
+        if anomalies:
+            top = anomalies[:2]
+            reasons.extend(detail for _, detail in top)
+        else:
+            reasons.append(f"off-manifold behavior (score={b_norm:.2f})")
     if identity >= 0.6:
         if expected and declared and expected != declared:
             reasons.append(
