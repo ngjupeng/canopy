@@ -8,8 +8,6 @@ wall of false positives and miss novel attack shapes entirely. Canopy is
 a risk layer calibrated to agent transaction patterns, designed to plug
 into the ERC-8004 identity layer and the x402 payment stack.
 
-Built for the Command Center hackathon, Challenge 02 (ERC-8004 + x402).
-
 ## The core insight
 
 Humans give you vibes. Agents give you receipts.
